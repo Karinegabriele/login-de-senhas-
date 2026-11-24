@@ -1,0 +1,221 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram - Projeto Escolar</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    width: 350px;
+    text-align: center;
+}
+
+.login {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 35px 30px;
+}
+
+.logo {
+    font-family: cursive;
+    font-size: 40px;
+    margin-bottom: 30px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fafafa;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background: #3897f0;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #1877d2;
+}
+
+#resultado, #progresso {
+    margin-top: 15px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.projeto {
+    background: white;
+    border: 1px solid #ddd;
+    margin-top: 15px;
+    padding: 20px;
+}
+
+h3 {
+    font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="login">
+        <div class="logo">Instagram</div>
+
+        <input id="usuario" type="text"
+        placeholder="Nome de usuário">
+
+        <input id="senha" type="password"
+        placeholder="Senha de demonstração">
+
+        <button onclick="entrar()">Entrar</button>
+
+        <div id="resultado"></div>
+    </div>
+
+    <div class="projeto">
+        <h3>🔐 Segurança e criptografia</h3>
+        <p>Hash SHA-256 da senha de demonstração:</p>
+
+        <button onclick="criptografar()">
+            Gerar hash SHA-256
+        </button>
+
+        <div id="hash"></div>
+    </div>
+
+    <div class="projeto">
+        <h3>💻 Simulador de combinações</h3>
+
+        <p>Teste educativo com até 3 caracteres.</p>
+
+        <button onclick="iniciarSimulacao()">
+            Iniciar demonstração
+        </button>
+
+        <div id="progresso"></div>
+    </div>
+
+</div>
+
+<script>
+
+// Login local de demonstração
+const usuarioCorreto = "aluno";
+const senhaCorreta = "ab";
+
+function entrar() {
+    let usuario = document.getElementById("usuario").value;
+    let senha = document.getElementById("senha").value;
+
+    let resultado = document.getElementById("resultado");
+
+    if (usuario === usuarioCorreto &&
+        senha === senhaCorreta) {
+
+        resultado.innerHTML =
+        "✅ Login realizado com sucesso!";
+
+    } else {
+        resultado.innerHTML =
+        "❌ Usuário ou senha incorretos.";
+    }
+}
+
+// Hash SHA-256
+async function criptografar() {
+    let senha = document.getElementById("senha").value;
+
+    if (!senha) {
+        document.getElementById("hash").innerText =
+        "Digite uma senha primeiro.";
+        return;
+    }
+
+    let dados = new TextEncoder().encode(senha);
+
+    let resultado = await crypto.subtle.digest(
+        "SHA-256", dados
+    );
+
+    let hash = Array.from(new Uint8Array(resultado))
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+
+    document.getElementById("hash").innerText =
+    hash;
+}
+
+// Simulação de progresso com combinações fictícias
+function iniciarSimulacao() {
+    const caracteres = "abc123";
+    const senhaTeste = "ab";
+
+    let tentativas = 0;
+    let progresso = document.getElementById("progresso");
+
+    progresso.innerText = "Iniciando demonstração...";
+
+    for (let tamanho = 1; tamanho <= 3; tamanho++) {
+
+        const combinacoes = [];
+
+        function gerar(prefixo, restante) {
+            if (restante === 0) {
+                combinacoes.push(prefixo);
+                return;
+            }
+
+            for (const caractere of caracteres) {
+                gerar(prefixo + caractere, restante - 1);
+            }
+        }
+
+        gerar("", tamanho);
+
+        for (const tentativa of combinacoes) {
+            tentativas++;
+
+            if (tentativa === senhaTeste) {
+                progresso.innerText =
+                "✅ Senha fictícia encontrada: " +
+                tentativa +
+                " | Tentativas: " + tentativas;
+
+                return;
+            }
+        }
+    }
+}
+
+</script>
+
+</body>
+</html>
